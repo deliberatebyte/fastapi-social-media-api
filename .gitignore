@@ -7,4 +7,14 @@ wheels/
 *.egg-info
 
 # Virtual environments
-.venv
+.venv/
+
+# Ignore VS Code project-specific settings
+.vscode/settings.json
+
+# Environment variables and sensitive credentials
+.env
+.env.*
+
+# Allow the example environment file to be committed
+!.env.example
