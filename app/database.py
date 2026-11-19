@@ -1,0 +1,39 @@
+import os
+from urllib.parse import quote_plus
+
+from dotenv import load_dotenv
+from sqlalchemy import create_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
+
+load_dotenv()
+
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+DB_HOST = os.getenv("DB_HOST")
+
+if not DB_USER:
+    raise RuntimeError("Missing DB_USER in .env")
+
+if not DB_PASSWORD:
+    raise RuntimeError("Missing DB_PASSWORD in .env")
+
+if not DB_HOST:
+    raise RuntimeError("Missing DB_HOST in .env")
+
+SQLALCHEMY_DATABASE_URL = (
+    f"postgresql://{DB_USER}:{quote_plus(DB_PASSWORD)}@{DB_HOST}/fastapi"
+)
+
+engine = create_engine(SQLALCHEMY_DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
